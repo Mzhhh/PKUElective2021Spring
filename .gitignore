@@ -1,0 +1,11 @@
+.vscode/
+__pycache__/
+/test
+/log
+/cache
+/config
+/bin
+*.bac
+config.ini
+apikey.json
+user_agents.user.txt
