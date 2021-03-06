@@ -7,6 +7,7 @@ from PIL import Image
 from .captcha import Captcha
 from ..config import BaseConfig
 from .._internal import absp
+from ..exceptions import OperationFailedError, OperationTimeoutError, RecognizerError
 
 class APIConfig(object):
 
@@ -40,20 +41,29 @@ class TTShituRecognizer(object):
             "password": self._config.pwd,
             "image": encode
         }
-        result = json.loads(requests.post("http://api.ttshitu.com/base64", json=data).text)
+        try:
+            result = json.loads(requests.post(TTShituRecognizer._RECOGNIZER_URL, json=data, timeout=20).text)
+        except requests.Timeout:
+            raise OperationTimeoutError(msg="Recognizer connection time out")
+        except requests.ConnectionError:
+            raise OperationFailedError(msg="Unable to coonnect to the recognizer")
+        
         if result["success"]:
             return Captcha(result["data"]["result"], None, None, None, None)
         else: # fail
-            return Captcha(-1, result["message"], None, None, None)
+            raise RecognizerError(msg="Recognizer ERROR: %s" % result["message"])
 
     def _to_b64(raw):
         im = Image.open(BytesIO(raw))
-        if im.is_animated:
-            oim = im
-            oim.seek(oim.n_frames-1)
-            im = Image.new('RGB', oim.size)
-            im.paste(oim)
+        try:
+            if im.is_animated:
+                oim = im
+                oim.seek(oim.n_frames-1)
+                im = Image.new('RGB', oim.size)
+                im.paste(oim)
+        except:
+            pass
         buffer = BytesIO()
-        im.save(buffer, format='JPEG')
-        b64 = base64.b64encode(buffer.getvalue()).decode()
+        im.convert('RGB').save(buffer, format='JPEG')
+        b64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
         return b64

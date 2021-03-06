@@ -9,3 +9,4 @@ __pycache__/
 config.ini
 apikey.json
 user_agents.user.txt
+.DS_Store

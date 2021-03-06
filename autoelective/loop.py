@@ -53,7 +53,7 @@ mkdir(_USER_WEB_LOG_DIR)
 
 # recognizer = CaptchaRecognizer()
 recognizer = TTShituRecognizer()
-RECOGNIZER_MAX_ATTEMPT = 10
+RECOGNIZER_MAX_ATTEMPT = 15
 
 electivePool = Queue(maxsize=elective_client_pool_size)
 reloginPool = Queue(maxsize=elective_client_pool_size)
@@ -510,11 +510,7 @@ def run_elective_loop():
                     r = elective.get_DrawServlet()
 
                     captcha = recognizer.recognize(r.content)
-                    if captcha.code != -1:
-                        cout.info("Recognition result: %s" % captcha.code)
-                    else:
-                        raise RecognizerError(msg=captcha.original)
-                        
+                    cout.info("Recognition result: %s" % captcha.code)
 
                     r = elective.get_Validate(captcha.code, config.iaaa_id)
                     try:
@@ -608,7 +604,7 @@ def run_elective_loop():
 
                 except ElectionSuccess as e:
                     # 不从此处加入 ignored，而是在下回合根据教学网返回的实际选课结果来决定是否忽略
-                    cout.info("%s is ELECTED !" % course)
+                    cout.info("%s is ELECTED (OR WAITLISTED)!" % course)
 
                     # --------------------------------------------------------------------------
                     # Issue #25
