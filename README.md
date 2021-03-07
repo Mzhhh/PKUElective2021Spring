@@ -1,5 +1,7 @@
 # PKUAutoElective 2021 Spring Version
 
+**Update at Mar 7 15:28 (UTC+8)**: 修改了 `get_supplement` 的 API 参数，已经可以实现课程列表页面的正常跳转，请更新至最新 commit 版本
+
 本项目基于 [PKUAutoElective](https://github.com/zhongxinghong/PKUAutoElective)，对 2021 春季学期的选课网站 API 改动进行了调整。并针对验证码系统的改动，将识别系统转为在线商用平台 [TT识图](http://www.ttshitu.com)（打钱！打钱！），目前识别准确度仍然略微堪忧。
 
 ## 安装
