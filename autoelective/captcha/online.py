@@ -61,7 +61,7 @@ class TTShituRecognizer(object):
                 oim.seek(oim.n_frames-1)
                 im = Image.new('RGB', oim.size)
                 im.paste(oim)
-        except:
+        except AttributeError:
             pass
         buffer = BytesIO()
         im.convert('RGB').save(buffer, format='JPEG')

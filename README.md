@@ -1,10 +1,10 @@
 # PKUAutoElective 2021 Spring Version
 
-本项目基于 [PKUAutoElective](https://github.com/zhongxinghong/PKUAutoElective)，对 2021 春季学期的选课网站 API 改动进行了调整。并针对验证码系统的改动，将识别系统转为在线平台 [TT识图](http://www.ttshitu.com)（打钱！打钱！），目前识别准确度仍然略微堪忧。
+本项目基于 [PKUAutoElective](https://github.com/zhongxinghong/PKUAutoElective)，对 2021 春季学期的选课网站 API 改动进行了调整。并针对验证码系统的改动，将识别系统转为在线商用平台 [TT识图](http://www.ttshitu.com)（打钱！打钱！），目前识别准确度仍然略微堪忧。
 
 ## 安装
 
-请参考 [PKUAutoElective](https://github.com/zhongxinghong/PKUAutoElective) 项目提供的安装指南进行安装，但本项目不依赖于 `pytorch`，因此可以省略其中的以下部分
+请参考 [PKUAutoElective](https://github.com/zhongxinghong/PKUAutoElective) 项目提供的安装指南进行安装，但本项目**不**依赖于 `pytorch`，因此可以**省略**其中的以下部分
 
 > 安装 PyTorch，从 PyTorch 官网 中选择合适的条件获得下载命令，然后复制粘贴到命令行中运行即可下载安装。（注：本项目不需要 cuda，当然你可以安装带 gpu 优化的版本）
 > 
@@ -39,7 +39,7 @@
 将项目 clone 至本地后，切换至项目根目录下并运行 `main.py` 即可。
 
 ```
-cd PKUElective2019Spring
+cd PKUElective2021Spring
 python3 main.py
 ```
 
@@ -127,6 +127,6 @@ Captcha('vfg8') True
 
 ## 注意事项
 
-* 截至本次 commit 时，本程序暂时没有在补退选第二、第三阶段进行测试
 * 作者可能无视 issue 和 PR，如果您有更好的改进想法，请最好 clone 一份后自行改动
+* 请不要在公开场合传播此项目，以免造成不必要的麻烦
 * 刷课有风险 USE AT YOUR OWN RISK!
