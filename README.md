@@ -47,13 +47,32 @@ python3 main.py
 
 使用 `Ctrl + C` 输送 `KeyboardInterrupt`，可以终止程序运行。
 
-### 高级用法
+### 命令行参数
 
 关于支持的命令行参数，参见 [PKUAutoElective](https://github.com/zhongxinghong/PKUAutoElective) 的使用说明。
 
-### 测试识图平台
+### TT识图：无感学习模式
+
+*本条目基于 [XiaoTian](https://github.com/xiaotianxt) 用户提出的 PR。*
+
+关于无感学习的详细信息，可参见 [无感学习介绍页面](http://www.ttshitu.com/news/fcda89be991e4af8927c32527fb45b1e.html)。简而言之，无感模式可以达到更高的识别准确率（并且识别准确度会随着使用次数的增加而进一步提高），但使用费率也更高，且使用前期识别速率较低。
+
+可以通过向 `apikey.json` 中传入额外参数 `enhanced_mode` 来控制无感学习模式是否开启（该参数缺省时默认不开启）：
+
+```json
+{
+    "username": "xiaoming",
+    "password": "xiaominghaoshuai",
+    "enhanced_mode": true
+}
+```
+
+**WARNING: 根据TT识图后台统计明细，无感学习模式前期单次识别耗时通常 > 3000ms，而普通模式下单次识别耗时通常 < 100ms。因此若您认为其他选课同学的手速足够快，请不要开启无感学习模式。**
+
+### TT识图平台测试
 
 配置好 `apikey.json` 后，在命令行运行以下指令以测试在线识图是否正常工作
+（由于无感学习模式下识别结果因用户异，请在关闭无感学习模式的条件下进行测试）
 
 ```
 python -c "import base64; from autoelective.captcha import TTShituRecognizer; 
@@ -130,5 +149,5 @@ Captcha('vfg8') True
 ## 注意事项
 
 * 作者可能无视 issue 和 PR，如果您有更好的改进想法，请最好 clone 一份后自行改动
-* 请不要在公开场合传播此项目，以免造成不必要的麻烦
+* 请不要在公开场合（以及某匿名平台）传播此项目，以免造成不必要的麻烦
 * 刷课有风险 USE AT YOUR OWN RISK!

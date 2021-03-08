@@ -26,14 +26,19 @@ class APIConfig(object):
     def pwd(self):
         return self._apikey['password']
 
+    def get(self, *args, **kwargs):  # wrapper of _apikey.get
+        return self._apikey.get(*args, **kwargs)
+
 
 class TTShituRecognizer(object):
 
     _RECOGNIZER_URL = "http://api.ttshitu.com/base64"
+    _ERROR_REPORT_URL = "http://api.ttshitu.com/reporterror.json"
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         self._config = APIConfig()
-        
+        self._cache = None  # previous result
+
     def recognize(self, raw):
         encode = TTShituRecognizer._to_b64(raw)
         data = {
@@ -41,6 +46,9 @@ class TTShituRecognizer(object):
             "password": self._config.pwd,
             "image": encode
         }
+        if self._config.get('enhanced_mode', False):  # “无感学习” 模式
+            data["typeid"] = 7
+            data["typename"] = "elective"
         try:
             result = json.loads(requests.post(TTShituRecognizer._RECOGNIZER_URL, json=data, timeout=20).text)
         except requests.Timeout:
@@ -49,9 +57,17 @@ class TTShituRecognizer(object):
             raise OperationFailedError(msg="Unable to coonnect to the recognizer")
         
         if result["success"]:
-            return Captcha(result["data"]["result"], None, None, None, None)
+            self._cache = result
+            return Captcha(result["data"]["result"].lower(), None, None, None, None)
         else: # fail
             raise RecognizerError(msg="Recognizer ERROR: %s" % result["message"])
+
+    def report_last_error(self):
+        assert self._cache is not None
+        try:
+            requests.post(TTShituRecognizer._ERROR_REPORT_URL, json={"id": self._cache["data"]["id"]}, timeout=5)
+        except requests.Timeout:
+            pass
 
     def _to_b64(raw):
         im = Image.open(BytesIO(raw))
