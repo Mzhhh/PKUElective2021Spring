@@ -16,7 +16,7 @@ class APIConfig(object):
     def __init__(self, path=_DEFAULT_CONFIG_PATH):
         with open(absp(path), 'r') as handle:
             self._apikey = json.load(handle)
-        assert 'username' in self._apikey.keys() and 'password' in self._apikey.keys()
+        assert 'username' in self._apikey.keys() and 'password' in self._apikey.keys() and 'typeid' in self._apikey.keys()
 
     @property
     def uname(self):
@@ -26,6 +26,10 @@ class APIConfig(object):
     def pwd(self):
         return self._apikey['password']
 
+    @property
+    def typeid(self):
+        return self._apikey['typeid']
+
 
 class TTShituRecognizer(object):
 
@@ -33,13 +37,14 @@ class TTShituRecognizer(object):
 
     def __init__(self):
         self._config = APIConfig()
-        
+
     def recognize(self, raw):
         encode = TTShituRecognizer._to_b64(raw)
         data = {
-            "username": self._config.uname, 
+            "username": self._config.uname,
             "password": self._config.pwd,
-            "image": encode
+            "image": encode,
+            "typeid": self._config.typeid
         }
         try:
             result = json.loads(requests.post(TTShituRecognizer._RECOGNIZER_URL, json=data, timeout=20).text)
@@ -47,7 +52,7 @@ class TTShituRecognizer(object):
             raise OperationTimeoutError(msg="Recognizer connection time out")
         except requests.ConnectionError:
             raise OperationFailedError(msg="Unable to coonnect to the recognizer")
-        
+
         if result["success"]:
             return Captcha(result["data"]["result"], None, None, None, None)
         else: # fail
