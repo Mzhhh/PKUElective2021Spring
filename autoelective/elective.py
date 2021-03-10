@@ -165,7 +165,6 @@ class ElectiveClient(BaseClient):
             params={
                 "netui_pagesize": "electableListGrid;20",
                 "netui_row": "electableListGrid;%s" % ( (page - 1) * 20 ),
-                "conflictCourse": "",
             },
             headers=headers,
             hooks=_hooks_check_title,

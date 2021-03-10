@@ -73,6 +73,9 @@ class _ElectiveNeedsLogin(Exception):
 class _ElectiveExpired(Exception):
     pass
 
+class _ElectiveCorrupted(Exception):
+    pass
+
 
 def _get_refresh_interval():
     if refresh_random_deviation <= 0:
@@ -386,7 +389,6 @@ def run_elective_loop():
                     cout.warning("Logout error")
                     cout.exception(e)
                 raise _ElectiveExpired   # quit this loop
-
             ## check supply/cancel page
 
             page_r = None
@@ -420,10 +422,14 @@ def run_elective_loop():
                 # 引入 retry 逻辑以防止以为某些特殊原因无限重试
                 # 正常情况下一次就能成功，但是为了应对某些偶发错误，这里设为最多尝试 3 次
                 #
+                # 特殊情况下 retry 达到最大次数后仍然失败，并且这个 client 以后也会一直失败
+                # 解决方法：抛出 _ElectiveCorrupted 使该 client 重新登录
+                #    
                 retry = 3
                 while True:
-                    if retry == 0:
-                        raise OperationFailedError(msg="unable to get normal Supplement page %s" % supply_cancel_page)
+                    if retry == 0:  # maximum retry reached
+                        cout.error("unable to get normal Supplement page %s" % supply_cancel_page)
+                        raise _ElectiveCorrupted
 
                     cout.info("Get Supplement page %s" % supply_cancel_page)
                     r = page_r = elective.get_supplement(page=supply_cancel_page) # 双学位第二页
@@ -668,6 +674,12 @@ def run_elective_loop():
 
         except _ElectiveExpired as e:
             cout.info("client: %s expired" % elective.id)
+            reloginPool.put_nowait(elective)
+            elective = None
+            noWait = True
+
+        except _ElectiveCorrupted as e:
+            cout.info("client: %s is probably corrupted, try to relogin" % elective.id)
             reloginPool.put_nowait(elective)
             elective = None
             noWait = True
