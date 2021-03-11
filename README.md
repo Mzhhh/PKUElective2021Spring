@@ -21,6 +21,8 @@
 
 参考 [PKUAutoElective](https://github.com/zhongxinghong/PKUAutoElective) 项目中的 `config.ini` 配置说明。
 
+**WARNING：建议不要将刷新间隔 `refresh_interval` 调到过小，否则您的 ip 有可能被选课网短时间内封禁**
+
 ### apikey.json
 
 **请首先将 apikey.sample.json 复制一份并改名为 apikey.json，并按照以下说明进行配置。**

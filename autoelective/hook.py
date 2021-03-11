@@ -89,7 +89,7 @@ def check_elective_title(r, **kwargs):
         return
 
     try:
-        if title == "系统异常":
+        if title in ("系统异常", "系统提示"):
             # err = __regex_errInfo.search(r.text).group(1)
             err = get_errInfo(r._tree)
 
