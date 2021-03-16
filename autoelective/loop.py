@@ -77,11 +77,12 @@ class _ElectiveCorrupted(Exception):
     pass
 
 
-def _get_refresh_interval():
+def _get_refresh_interval(eps=0.1):
     if refresh_random_deviation <= 0:
         return refresh_interval
     delta = (random.random() * 2 - 1) * refresh_random_deviation * refresh_interval
-    return refresh_interval + delta
+    ret = refresh_interval + delta
+    return ret if (ret > eps) else eps
 
 def _ignore_course(course, reason):
     ignored[course.to_simplified()] = reason
