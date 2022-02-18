@@ -398,7 +398,7 @@ def run_elective_loop():
 
                 cout.info("Get SupplyCancel page %s" % supply_cancel_page)
 
-                r = page_r = elective.get_SupplyCancel()
+                r = page_r = elective.get_SupplyCancel(username)
                 tables = get_tables(r._tree)
                 try:
                     elected = get_courses(tables[1])
@@ -433,7 +433,7 @@ def run_elective_loop():
                         raise _ElectiveCorrupted
 
                     cout.info("Get Supplement page %s" % supply_cancel_page)
-                    r = page_r = elective.get_supplement(page=supply_cancel_page) # 双学位第二页
+                    r = page_r = elective.get_supplement(username, page=supply_cancel_page) # 双学位第二页
                     tables = get_tables(r._tree)
                     try:
                         elected = get_courses(tables[1])
@@ -441,7 +441,7 @@ def run_elective_loop():
                     except IndexError as e:
                         cout.warning("IndexError encountered")
                         cout.info("Get SupplyCancel first to prevent empty table returned")
-                        _ = elective.get_SupplyCancel() # 遇到空页面时请求一次补退选主页，之后就可以不断刷新
+                        _ = elective.get_SupplyCancel(username) # 遇到空页面时请求一次补退选主页，之后就可以不断刷新
                     else:
                         break
                     finally:
